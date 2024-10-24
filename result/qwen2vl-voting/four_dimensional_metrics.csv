@@ -1,0 +1,2 @@
+Model,Score (Strict),InsufficientKnowledge (Strict),InadequateGeneralization (Strict),CompleteMastery (Strict),RoteMemorization (Strict),Score (Loose),InsufficientKnowledge (Loose),InadequateGeneralization (Loose),CompleteMastery (Loose),RoteMemorization (Loose)
+Qwen2VL-voting,19.33%,54.29% (285),13.14% (69),12.76% (67),60.82% (104),35.14%,54.29% (285),13.14% (69),28.57% (150),12.28% (21)

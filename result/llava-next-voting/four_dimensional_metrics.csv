@@ -1,0 +1,2 @@
+Model,Score (Strict),InsufficientKnowledge (Strict),InadequateGeneralization (Strict),CompleteMastery (Strict),RoteMemorization (Strict),Score (Loose),InsufficientKnowledge (Loose),InadequateGeneralization (Loose),CompleteMastery (Loose),RoteMemorization (Loose)
+LLaVA-NeXT-voting,6.86%,70.10% (368),5.71% (30),4.00% (21),83.46% (106),20.19%,70.10% (368),5.71% (30),17.33% (91),28.35% (36)

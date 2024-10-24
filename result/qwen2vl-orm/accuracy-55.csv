@@ -1,0 +1,2 @@
+Model,One-step(S1),Two-step(S2),Three-step(S3),Understanding and Conversion of Units,Angles and Length,Calculation of Plane Figures,Understanding of Plane Figures,Calculation of Solid Figures,Understanding of Solid Figures,Basic Transformations of Figures,Cutting and Combining of Figures,Direction,Position,Route Map,Correspondence of Coordinates and Positions
+Qwen2VL-ORM,59.92%,48.06%,40.61%,71.23%,59.65%,60.77%,61.43%,67.44%,50.93%,62.74%,57.36%,58.33%,45.61%,51.37%,53.33%
