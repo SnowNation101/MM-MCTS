@@ -14,16 +14,17 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 device_ids = list(range(torch.cuda.device_count()))
 
 class IndexBuilder:
-    def __init__(self, dataset, device, model, preprocess=None):
+    def __init__(self, dataset: str, device, model, preprocess=None):
         self.dataset = dataset
         self.device = device
         self.model = model
         self.preprocess = preprocess
 
         dataset_paths = {
-            "MathVista": "/home/u2024001042/huggingface/datasets/math_vista/",
-            "MathVision": "/home/u2024001042/huggingface/datasets/math_vision/",
-            "MathVerse": "/home/u2024001042/huggingface/datasets/math_verse/"
+            "MathVista": "datasets/math_vista/",
+            "MathVision": "datasets/math_vision/",
+            "MathVerse": "datasets/math_verse/",
+            "WeMath": "datasets/we_math/",
         }
 
         self.path = dataset_paths.get(self.dataset)
@@ -33,11 +34,19 @@ class IndexBuilder:
         index_to_image_id = {}
         count = 0
 
+        image_dir = os.path.join(self.path, 'images')
         if self.dataset == "MathVista":
-            image_dir = os.path.join(self.path, 'images')
+            data_range = range(1, 1001)
+        elif self.dataset == "MathVision":
+            data_range = range(1, 3041)
+        elif self.dataset == "MathVerse":
+            image_dir = os.path.join(self.path, 'images/images_version_6')
+            data_range = range(1, 789)
 
-        for i in tqdm(range(1, 1001)):
+        for i in tqdm(data_range):
             image_file = f"{i}.jpg"
+            if self.dataset == "MathVerse":
+                image_file = f"image_{i}.png"
             image_path = os.path.join(image_dir, image_file)
 
             # Check if the file exists in the directory
@@ -87,10 +96,19 @@ class IndexBuilder:
         
         if self.dataset == "MathVista":
             data = pd.read_parquet(os.path.join(self.path, 'data/testmini-00000-of-00001-725687bf7a18d64b.parquet'))
+        elif self.dataset == "MathVision":
+            data = pd.read_parquet(os.path.join(self.path, 'data/test-00000-of-00001-3532b8d3f1b4047a.parquet'))
+        elif self.dataset == "MathVerse":
+            data = pd.read_parquet(os.path.join(self.path, 'testmini_text_only.parquet'))
 
         for _, datum in tqdm(data.iterrows(), total=len(data)):
             question = datum['question']
-            text_id = datum['pid']
+            if self.dataset == "MathVista":
+                text_id = datum['pid']
+            elif self.dataset == "MathVision":
+                text_id = datum['id']
+            elif self.dataset == "MathVerse":
+                text_id = datum['problem_index']
 
             with torch.no_grad():
                 text_tokens = clip.tokenize([question], truncate=True)
@@ -125,27 +143,25 @@ class IndexBuilder:
 
 
     def load_index(self, index_path, index_to_id_path):
-        # Your implementation for loading the Faiss index
-        # Return the loaded index and index mapping
+        # TODO: Load the index and index_to_id mapping
         pass
 
-# Usage in your main script
+
 if __name__ == '__main__':
     clip_model, preprocess = clip.load('ViT-L/14@336px', device='cuda', jit=False)
 
     # Initialize the IndexBuilder with dataset, device, model, preprocess
-    builder = IndexBuilder("MathVista", device, clip_model, preprocess)
+    builder1 = IndexBuilder("MathVista", device, clip_model, preprocess)
+    builder2 = IndexBuilder("MathVision", device, clip_model, preprocess)
+    builder3 = IndexBuilder("MathVerse", device, clip_model, preprocess)
 
     # Build image index
-    # img_index = builder.build_image_index()
-    text_index = builder.build_text_index()
+    img_index1 = builder1.build_image_index()
+    img_index2 = builder2.build_image_index()
+    img_index3 = builder3.build_image_index()
+
 
     # Build text index
-    # txt_index = builder.build_text_index()
-
-    # Saving and loading the index can be done as follows
-    # img_index = builder.load_index('image_index_path', 'image_index_to_id_path')
-
-    # txt_index = builder.load_index('text_index_path', 'text_index_to_id_path')
-
-    # The rest of your code for processing the examples can remain in the main script
+    txt_index1 = builder1.build_text_index()
+    txt_index2 = builder2.build_text_index()
+    txt_index3 = builder3.build_text_index()

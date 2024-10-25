@@ -1,0 +1,2 @@
+Model,Score (Strict),InsufficientKnowledge (Strict),InadequateGeneralization (Strict),CompleteMastery (Strict),RoteMemorization (Strict),Score (Loose),InsufficientKnowledge (Loose),InadequateGeneralization (Loose),CompleteMastery (Loose),RoteMemorization (Loose)
+Qwen2VL-MV16,23.62%,46.86% (246),13.71% (72),16.76% (88),57.49% (119),42.29%,46.86% (246),13.71% (72),35.43% (186),10.14% (21)

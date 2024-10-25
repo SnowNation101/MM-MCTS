@@ -1,4 +1,11 @@
 datasets/*
+!datasets/
+
+# indexes/*
+# !indexes/
+
+# output/*
+# !output/
 
 test.py
 *.ipynb
