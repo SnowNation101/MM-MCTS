@@ -3,6 +3,9 @@ by the evaluation script.
 """
 
 import json
+import os
+import re
+from collections import Counter
 
 
 def process_data(in_path, out_path):
@@ -37,7 +40,47 @@ def process_data(in_path, out_path):
         json.dump(output, f, indent=4)
 
 
+def process_gpt_output(in_dir, out_path):
+    input = []
+    output = []
+    for filename in os.listdir(in_dir):
+        if filename.endswith(".json"):
+            with open(os.path.join(in_dir, filename), "r") as f:
+                data = json.load(f)
+                input.append(data)
+    
+    n = len(input[0])
+    for i in range(n):
+        datum = input[0][i]
+        responses = []
+        for j in range(len(input)):
+            responses.append(input[j][i]["response"])
+        output.append(datum)
+        datum["all_responses"] = responses
+        options = []
+        for response in responses:
+            option = response.split('Answer')[-1].strip()
+            option = re.sub(r'[>><<:.]', '', option).strip()
+            option = option[0] if option and option[0] in 'ABCDEFGH' else None
+            options.append(option)
+
+        datum["options"] = options
+        most_common_option = Counter(options).most_common(1)[0][0]
+        datum["option"] = most_common_option
+        datum["response"] = {option: response for option, response in zip(options, responses)}.get(most_common_option)
+
+    with open(out_path, "w") as f:
+        json.dump(output, f, indent=4)
+
+
+def main():
+    process_gpt_output("output/gpt4o", "output/gpt4o-voting-4.json")
+    process_gpt_output("output/gpt4v", "output/gpt4v-voting-4.json")
+
+
 if __name__ == "__main__":
-    process_data("output/qwen2vl-voting.json", "processed_data/qwen2vl.json")
-    process_data("output/internvl2-voting.json", "processed_data/internvl2.json")
-    process_data("output/llava-next-voting.json", "processed_data/llava-next.json")
+    main()
+    # process_data("output/qwen2vl-voting.json", "processed_data/qwen2vl.json")
+    # process_data("output/internvl2-voting.json", "processed_data/internvl2.json")
+    # process_data("output/llava-next-voting.json", "processed_data/llava-next.json")
+    

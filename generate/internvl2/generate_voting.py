@@ -87,7 +87,7 @@ def load_image(image_file, input_size=448, max_num=12):
     return pixel_values
 
 
-path = '/fs/archive/share/u2024001021/huggingface_models/InternVL2-8B'
+path = '/fs/archive/share/InternVL2-8B'
 model = AutoModel.from_pretrained(
     path,
     torch_dtype=torch.bfloat16,
@@ -100,7 +100,7 @@ with open("datasets/we_math/testmini.json", "rb") as f:
     data = json.load(f)
 
 output = []
-width = 16
+width = 32
 
 for datum in tqdm(data, desc="Inferencing"):
     img_question = datum["question"]
@@ -144,5 +144,5 @@ for datum in tqdm(data, desc="Inferencing"):
     datum["response"] = final_response
     output.append(datum)
 
-with open("output/internvl2-voting-16.json", "w") as f:
+with open(f"output/internvl2-voting-{width}.json", "w") as f:
     json.dump(output, f, indent=4)

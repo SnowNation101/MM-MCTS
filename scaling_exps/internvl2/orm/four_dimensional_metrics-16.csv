@@ -1,0 +1,2 @@
+Model,Score (Strict),InsufficientKnowledge (Strict),InadequateGeneralization (Strict),CompleteMastery (Strict),RoteMemorization (Strict),Score (Loose),InsufficientKnowledge (Loose),InadequateGeneralization (Loose),CompleteMastery (Loose),RoteMemorization (Loose)
+internvl2,30.00%,35.81% (188),14.29% (75),22.86% (120),54.20% (142),53.62%,35.81% (188),14.29% (75),46.48% (244),6.87% (18)

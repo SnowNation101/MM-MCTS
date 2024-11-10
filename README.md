@@ -1,4 +1,18 @@
-# MM-MCTS We-Math Benchmarck Test
+# MM-MCTS
+<div align="center">
+<a href="https://github.com/SnowNation101/MM-MCTS/blob/main/LICENSE"><img alt="GitHub License" src="https://img.shields.io/github/license/SnowNation101/MM-MCTS"></a> <img alt="Github Stars" src="https://img.shields.io/github/stars/SnowNation101/MM-MCTS">
+</div>
+
+
+
+To be released:
+- [ ] We-Math benchmark test
+- [ ] MathVista benchmark test
+- [ ] ORM and PRM training
+- [ ] Full inferencing pipeline
+
+
+# We-Math Benchmark Test
 
 ## Preparation
 

@@ -92,7 +92,7 @@ class IndexBuilder:
         index_with_ids = faiss.IndexIDMap(index)
 
         # Add embeddings with corresponding IDs
-        ids = np.array(list(index_to_image_id.keys())).astype('int64')
+        ids = np.array(list(index_to_image_id.values())).astype('int64')
         index_with_ids.add_with_ids(embeddings, ids)
         faiss.write_index(index_with_ids, 'indexes/' + self.dataset.lower() + '_image.index')
 
@@ -161,7 +161,7 @@ class IndexBuilder:
         index_with_ids = faiss.IndexIDMap(index)
 
         # Add embeddings with corresponding IDs
-        ids = np.array(list(index_to_text_id.keys())).astype('int64')
+        ids = np.array(list(index_to_text_id.values())).astype('int64')
         index_with_ids.add_with_ids(embeddings, ids)
 
         faiss.write_index(index_with_ids, 'indexes/' + self.dataset.lower() + '_text.index')

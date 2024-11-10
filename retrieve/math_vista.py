@@ -101,7 +101,7 @@ def retrieve_mathvision(model, preprocess, image_index, text_index, test_dataset
         results = []
         for index, distance in zip(I[0], D[0]):
             result = {}
-            result['image_path'] = str(index+1) + ".jpg"
+            result['image_path'] = str(index) + ".jpg"
             result['quesiton'] = data.iloc[index]['question']
             result['answer'] = data.iloc[index]['answer']
             choices = data.iloc[index]['options']
@@ -121,7 +121,7 @@ def retrieve_mathvision(model, preprocess, image_index, text_index, test_dataset
         results = []
         for index, distance in zip(I[0], D[0]):
             result = {}
-            result['image_path'] = str(index+1) + ".jpg"
+            result['image_path'] = str(index) + ".jpg"
             result['quesiton'] = data.iloc[index]['question']
             result['answer'] = data.iloc[index]['answer']
             choices = data.iloc[index]['options']
@@ -163,12 +163,12 @@ def retrieve_mathverse(model, preprocess, image_index, text_index, test_dataset)
         results = []
         for index, distance in zip(I[0], D[0]):
             result = {}
-            result['image_path'] = f"image_{index+1}.jpg"
-            result['quesiton'] = data.iloc[index]['question']
-            result['answer'] = data.iloc[index]['answer']
+            result['image_path'] = f"image_{index}.jpg"
+            result['quesiton'] = data[data['problem_index'] == str(index)]['question'].values[0]
+            result['answer'] = data[data['problem_index'] == str(index)]['answer'].values[0]
             result['metadata'] = {
                 "distance": float(distance), 
-                "query": data.iloc[index]['query_cot'],
+                "query": data[data['problem_index'] == str(index)]['query_cot'].values[0],
                 }
             results.append(result)
 
@@ -181,12 +181,12 @@ def retrieve_mathverse(model, preprocess, image_index, text_index, test_dataset)
         results = []
         for index, distance in zip(I[0], D[0]):
             result = {}
-            result['image_path'] = f"image_{index+1}.jpg"
-            result['quesiton'] = data.iloc[index]['question']
-            result['answer'] = data.iloc[index]['answer']
+            result['image_path'] = f"image_{index}.jpg"
+            result['quesiton'] = data[data['problem_index'] == str(index)]['question'].values[0]
+            result['answer'] = data[data['problem_index'] == str(index)]['answer'].values[0]
             result['metadata'] = {
                 "distance": float(distance), 
-                "query": data.iloc[index]['query_cot'],
+                "query": data[data['problem_index'] == str(index)]['query_cot'].values[0],
                 }
             results.append(result)
 
@@ -198,9 +198,10 @@ def retrieve_mathverse(model, preprocess, image_index, text_index, test_dataset)
 
 if __name__ == "__main__" :
 
-    test_dataset = []
+    # only take first 1k intances as test set
     with open('datasets/math_vista/test.json', 'r') as f:
         test_dataset = json.load(f)
+    test_dataset = {k: v for k, v in test_dataset.items() if "1" <= k <= "1000"}
 
     # Load the CLIP model
     clip_model, preprocess = clip.load('ViT-L/14@336px', 
@@ -208,7 +209,7 @@ if __name__ == "__main__" :
                                        jit=False)
 
 
-    ################################ We Math ###################################
+    ############################### We Math ####################################
     image_index1 = faiss.read_index('indexes/wemath_image.index')
     text_index1 = faiss.read_index('indexes/wemath_text.index')
 
@@ -222,7 +223,7 @@ if __name__ == "__main__" :
         json.dump(t2t_results, f, indent=4)
 
 
-    ################################ Math Vision ###############################
+    ############################### Math Vision ################################
     image_index2 = faiss.read_index('indexes/mathvision_image.index')
     text_index2 = faiss.read_index('indexes/mathvision_text.index')
 

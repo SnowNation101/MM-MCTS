@@ -20,6 +20,7 @@ def build_transform(input_size):
     ])
     return transform
 
+
 def find_closest_aspect_ratio(aspect_ratio, target_ratios, width, height, image_size):
     best_ratio_diff = float('inf')
     best_ratio = (1, 1)
@@ -34,6 +35,7 @@ def find_closest_aspect_ratio(aspect_ratio, target_ratios, width, height, image_
             if area > 0.5 * image_size * image_size * ratio[0] * ratio[1]:
                 best_ratio = ratio
     return best_ratio
+
 
 def dynamic_preprocess(image, min_num=1, max_num=12, image_size=448, use_thumbnail=False):
     orig_width, orig_height = image.size
@@ -73,6 +75,7 @@ def dynamic_preprocess(image, min_num=1, max_num=12, image_size=448, use_thumbna
         processed_images.append(thumbnail_img)
     return processed_images
 
+
 def load_image(image_file, input_size=448, max_num=12):
     image = Image.open(image_file).convert('RGB')
     transform = build_transform(input_size=input_size)
@@ -90,7 +93,7 @@ model = AutoModel.from_pretrained(
     trust_remote_code=True).eval().cuda()
 tokenizer = AutoTokenizer.from_pretrained(path, trust_remote_code=True, use_fast=False)
 
-with open("data/testmini.json", "rb") as f:
+with open("datasets/we_math/testmini.json", "rb") as f:
     data = json.load(f)
 
 output = []
@@ -98,22 +101,32 @@ output = []
 for datum in tqdm(data, desc="Inferencing"):
     img_question = datum["question"]
     img_option = datum["option"]
-    img_path = "data/" + datum["image_path"]
+    img_path = "datasets/we_math/" + datum["image_path"]
 
-    prompt = f"<image>\n\
+    prompt = f"""<image>\n\
         Now, we require you to solve a multiple-choice math question.\n\
         Please briefly describe your thought process and provide the final answer(option).\n\
         Question: {img_question}\n\
         Option: {img_option}\n\
         Regarding the format, please answer following the template below, and be sure to include two <> symbols:\n\
         <Thought process>:<<your thought process>>\n\
-        <Answer>:<<your option>>."
-
+        <Answer>:<<your option>>."""
+    
+    # First response
     pixel_values = load_image(img_path, max_num=12).to(torch.bfloat16).cuda()
     generation_config = dict(max_new_tokens=1024, do_sample=True)
-    response = model.chat(tokenizer, pixel_values, prompt, generation_config)
+    response, history = model.chat(tokenizer, pixel_values, prompt, generation_config, history=None, return_history=True)
+    datum["init_response"] = response
+
+    # Self correction
+    question = f"""Review your previous answer and ensure that 
+                all relevant aspects of the image have been considered. 
+                Are there any elements or details that you missed? Based on your
+                review, improve your answer."""
+    response, history = model.chat(tokenizer, pixel_values, question, generation_config, history=history, return_history=True)
     datum["response"] = response
+
     output.append(datum)
 
-with open("output/internvl2-base.json", "w") as f:
+with open("output/internvl2-sc.json", "w") as f:
     json.dump(output, f, indent=4)

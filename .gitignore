@@ -11,10 +11,12 @@ output/*
 
 processed_data/*
 
-result/*
-!result/
+results/*
+!results/
+
+scaling_exps/**/**/*.json
 
 test.py
 test_orm.py
-processed_data.py
+process_data.py
 *.ipynb

@@ -104,10 +104,10 @@ def evaluate_models(model_name, output_json, knowledge_structure_nodes_path, mai
 # Argument parser for command-line execution
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Evaluate the performance of different LMMs on four-dimensional metrics.')
-    parser.add_argument('--model_name', default='Qwen2VL-prm', type=str, help='Model name.')
-    parser.add_argument('--output_json', default='output/scores/qwen2vl_prm_seudo.json', type=str, help='Output json.')
+    parser.add_argument('--model_name', default='InternVL2-voting-16', type=str, help='Model name.')
+    parser.add_argument('--output_json', default='output/internvl2-voting-16.json', type=str, help='Output json.')
     parser.add_argument('--knowledge_structure_nodes_path', default='datasets/we_math/knowledge_structure_nodes.json', type=str, help='Path to the knowledge structure nodes JSON file.')
-    parser.add_argument('--main_results_csv_path', default='result/qwen2vl-prm/accuracy.csv', type=str, help='Path to save the main results CSV file.')
+    parser.add_argument('--main_results_csv_path', default='results/internvl2-voting/accuracy-16.csv', type=str, help='Path to save the main results CSV file.')
     return parser.parse_args()
 
 # Main entry point

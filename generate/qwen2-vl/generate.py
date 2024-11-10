@@ -9,7 +9,9 @@ from tqdm import tqdm
 def load_model(model_path):
     model = Qwen2VLForConditionalGeneration.from_pretrained(
         model_path,
-        torch_dtype="auto"
+        torch_dtype=torch.bfloat16,
+        attn_implementation="flash_attention_2",
+        device_map="auto"
     ).cuda()
     processor = AutoProcessor.from_pretrained(model_path)
     return model, processor
@@ -95,8 +97,8 @@ def generate_responses(model, processor, data_path, width=16):
 
 
 def main():
-    width = 16
-    model_path = "/home/u2024001042/huggingface/Qwen/Qwen2-VL-7B-Instruct"
+    width = 32
+    model_path = "/fs/archive/share/Qwen2-VL-7B-Instruct"
     data_path = "datasets/we_math/"
     output_path = f"output/qwen2vl-voting-{width}.json"
 
