@@ -57,7 +57,16 @@ python3 util/index.py
 The indexes may be stored under indexes dir
 
 ```
-
+MM-MCTS
+└── indexes
+    ├── mathverse_image.index
+    ├── mathverse_text.index
+    ├── mathvision_image.index
+    ├── mathvision_text.index
+    ├── mathvista_image.index
+    ├── mathvista_text.index
+    ├── wemath_image.index
+    └── wemath_text.index
 ```
 
 ## Retrieve
